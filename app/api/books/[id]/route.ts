@@ -44,13 +44,9 @@ export async function PUT(req: Request, { params }: Params) {
   const body = await req.json()
   const { title, description, imageId, image, author, authorId } = body
 
-  const img = image
-    ? await cloudinary.uploader.upload(image, {
-        folder: 'books',
-      })
-    : null
-  const publicId = img?.public_id
-  const url = img?.secure_url
+  const { public_id, url } = await cloudinary.uploader.upload(image, {
+    folder: 'books',
+  })
 
   const book = await prismadb.book.update({
     where: {
@@ -65,7 +61,7 @@ export async function PUT(req: Request, { params }: Params) {
             id: imageId,
           },
           data: {
-            publicId,
+            publicId: public_id,
             url,
           },
         },
