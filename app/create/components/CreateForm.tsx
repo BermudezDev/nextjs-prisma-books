@@ -1,7 +1,7 @@
 'use client'
 
 import { useBooks } from '@/context/BooksContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { BookUpdate } from '@/interfaces/Book'
 export default function CreateForm({ id }: { id?: string }) {
@@ -11,6 +11,16 @@ export default function CreateForm({ id }: { id?: string }) {
   const [image, setImage] = useState('')
   const [author, setAuthor] = useState('')
   const navigate = useRouter()
+
+  useEffect(() => {
+    if (currentBook) {
+      setTitle(currentBook.title)
+      setDescription(currentBook.description)
+      setAuthor(currentBook.author?.name)
+    }
+    console.log(author)
+  }, [currentBook])
+
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-24">
       <div
@@ -40,6 +50,7 @@ export default function CreateForm({ id }: { id?: string }) {
                 author,
               })
             }
+            navigate.push('/')
           }}
         >
           <div className="flex flex-col py-2 text-white">
@@ -84,6 +95,7 @@ export default function CreateForm({ id }: { id?: string }) {
             <input
               type="file"
               name="image"
+              defaultValue={currentBook.image?.url}
               onChange={(e) => {
                 if (e.target.files != null) {
                   const img = e.target.files[0]

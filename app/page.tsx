@@ -2,6 +2,7 @@
 
 import { useBooks } from '@/context/BooksContext'
 import { useState, useEffect } from 'react'
+import { VscEdit, VscTrash, VscHeart } from 'react-icons/vsc'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
   const { bookList, getBooks, updateBook, deleteBook } = useBooks()
   useEffect(() => {
     getBooks()
-  }, [])
+  }, [bookList.length])
 
   return (
     <main className="flex min-h-screen p-4">
@@ -18,7 +19,7 @@ export default function Home() {
           {bookList.map((book, index) => (
             <div
               key={index}
-              className="flex max-h-[380px] max-w-[180px] flex-col flex-wrap break-words rounded-sm bg-slate-800 p-2"
+              className="flex max-h-[400px] max-w-[200px] flex-col flex-wrap break-words rounded-sm bg-slate-800 p-2"
             >
               <div className="flex h-[230px] object-cover">
                 <Image
@@ -32,15 +33,28 @@ export default function Home() {
                 <h3 className="text-center font-bold uppercase text-white">
                   {book.title}
                 </h3>
-                <p className="text-slate-400">{book.description}</p>
-                <h2 className="text-right font-bold text-white">
+                <p className="text-sm text-slate-400">{book.description}</p>
+
+                <h2 className="text-center font-bold text-white">
                   {book.author.name}
                 </h2>
               </div>
-              <div className="mt-1 flex justify-between border-t border-orange-400 text-slate-700">
-                <p onClick={() => navigate.push('/create/' + book.id)}>edit</p>
-                <p onClick={() => deleteBook(book.id)}>delete</p>
-                <p>fav</p>
+              <div className="flex justify-between border-t border-orange-400 pt-2 text-xl text-slate-700">
+                <p
+                  className="cursor-pointer hover:text-white"
+                  onClick={() => navigate.push('/create/' + book.id)}
+                >
+                  <VscEdit />
+                </p>
+                <p
+                  className="cursor-pointer hover:text-white"
+                  onClick={() => deleteBook(book.id)}
+                >
+                  <VscTrash />
+                </p>
+                <p className="cursor-pointer hover:text-white">
+                  <VscHeart />
+                </p>
               </div>
             </div>
           ))}

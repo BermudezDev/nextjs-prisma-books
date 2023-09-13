@@ -8,15 +8,15 @@ export interface IBook {
 }
 
 export interface CurrentBook {
-  title?: string
-  description?: string
-  image?: {
+  title: string
+  description: string
+  image: {
     id: string
     url: string
     publicId: string
   }
-  imageId?: string
-  author?: {
+  imageId: string
+  author: {
     id: string
     name: string
   }

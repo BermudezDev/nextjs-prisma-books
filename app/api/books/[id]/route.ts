@@ -44,10 +44,47 @@ export async function PUT(req: Request, { params }: Params) {
   const body = await req.json()
   const { title, description, imageId, image, author, authorId } = body
 
-  const { public_id, url } = await cloudinary.uploader.upload(image, {
-    folder: 'books',
-  })
+  if (image) {
+    const { public_id, url } = await cloudinary.uploader.upload(image, {
+      folder: 'books',
+    })
 
+    const book = await prismadb.book.update({
+      where: {
+        id: id,
+      },
+      data: {
+        title,
+        description,
+        image: {
+          update: {
+            where: {
+              id: imageId,
+            },
+            data: {
+              publicId: public_id,
+              url,
+            },
+          },
+        },
+        author: {
+          update: {
+            where: {
+              id: authorId,
+            },
+            data: {
+              name: author,
+            },
+          },
+        },
+      },
+    })
+
+    if (!book) {
+      return new NextResponse('Book not found', { status: 404 })
+    }
+    return NextResponse.json(book)
+  }
   const book = await prismadb.book.update({
     where: {
       id: id,
@@ -55,17 +92,6 @@ export async function PUT(req: Request, { params }: Params) {
     data: {
       title,
       description,
-      image: {
-        update: {
-          where: {
-            id: imageId,
-          },
-          data: {
-            publicId: public_id,
-            url,
-          },
-        },
-      },
       author: {
         update: {
           where: {
